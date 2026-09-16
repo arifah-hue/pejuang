@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Misi Pahlawan Tempatan | Sejarah Tahun 5</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;font-family:Arial,Helvetica,sans-serif;color:#fff;min-height:100vh;
+  background:
+    radial-gradient(circle at 20% 20%,rgba(255,255,255,.16) 0 5%,transparent 6%),
+    radial-gradient(circle at 80% 15%,rgba(255,255,255,.12) 0 4%,transparent 5%),
+    linear-gradient(180deg,#071b35 0%,#0b3d5c 45%,#146b45 100%);
+  overflow-x:hidden;
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;
+  background-image:linear-gradient(30deg,rgba(255,255,255,.08) 12%,transparent 12.5%,transparent 87%,rgba(255,255,255,.08) 87.5%,rgba(255,255,255,.08)),
+  linear-gradient(150deg,rgba(255,255,255,.08) 12%,transparent 12.5%,transparent 87%,rgba(255,255,255,.08) 87.5%,rgba(255,255,255,.08));
+  background-size:45px 80px;
+}
+.container{width:94%;max-width:950px;margin:22px auto;position:relative}
+.header{
+  position:relative;overflow:hidden;text-align:center;padding:25px 18px;
+  border:4px solid #111827;border-radius:18px;
+  background:linear-gradient(135deg,#1683d8,#075985 55%,#047857);
+  box-shadow:0 10px 0 #111827,0 18px 30px rgba(0,0,0,.35);
+}
+.header:after{
+  content:"";position:absolute;left:-10%;right:-10%;bottom:-35px;height:70px;
+  background:rgba(255,255,255,.12);transform:rotate(-3deg);
+}
+.header .icon{font-size:58px;text-shadow:4px 4px 0 #111827}
+.header h1{margin:4px 0;font-size:clamp(25px,5vw,42px);text-shadow:3px 3px 0 #111827;letter-spacing:1px}
+.header p{margin:5px 0;font-size:clamp(14px,3vw,18px);font-weight:bold}
+.card{
+  margin-top:16px;background:rgba(15,23,42,.94);padding:28px;
+  border:4px solid #111827;border-radius:18px;
+  box-shadow:0 10px 0 #020617,0 18px 30px rgba(0,0,0,.35);
+}
+.screen{display:none}.screen.active{display:block}
+.welcome{text-align:center}.welcome h2{font-size:30px;margin:5px 0 15px;color:#facc15;text-shadow:2px 2px 0 #111827}
+.welcome-text{line-height:1.7;font-size:17px}
+.name-label{display:block;text-align:left;font-weight:bold;margin-top:25px;margin-bottom:8px;color:#fde68a}
+.name-input{
+  width:100%;padding:16px;font-size:17px;border:3px solid #334155;
+  border-radius:12px;outline:none;background:#f8fafc;color:#111827;font-weight:bold;
+}
+.name-input:focus{border-color:#facc15}
+.info-box{
+  background:#123b52;border:3px solid #1e6b8f;padding:18px;border-radius:12px;
+  margin-top:20px;line-height:1.6;text-align:left
+}
+.info-box strong{color:#facc15}
+.btn{
+  border:3px solid #111827;border-radius:12px;padding:15px 22px;font-size:16px;
+  font-weight:900;cursor:pointer;transition:.12s;box-shadow:0 5px 0 #111827;
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 7px 0 #111827}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #111827}
+.btn-start{width:100%;margin-top:22px;background:#fbbf24;color:#111827}
+.quiz-top{
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  font-weight:900;margin-bottom:10px
+}
+.score{color:#facc15}
+.progress-container{width:100%;height:17px;background:#1e293b;border:2px solid #334155;border-radius:20px;overflow:hidden;margin-bottom:25px}
+.progress-bar{height:100%;width:0;background:linear-gradient(90deg,#facc15,#22c55e);transition:width .3s ease}
+.question-box{
+  background:linear-gradient(135deg,#1e293b,#164e63);border:3px solid #38bdf8;
+  border-radius:15px;padding:22px;margin-bottom:20px;box-shadow:inset 0 0 25px rgba(56,189,248,.08)
+}
+.question-box h2{margin:0;line-height:1.5;font-size:clamp(19px,3vw,25px)}
+.options{display:grid;gap:13px}
+.option{
+  width:100%;background:#f8fafc;border:3px solid #111827;text-align:left;
+  color:#111827;border-radius:12px;padding:16px;font-size:16px;
+  font-weight:900;cursor:pointer;transition:.12s;box-shadow:0 4px 0 #111827
+}
+.option:hover:not(:disabled){transform:translateY(-2px);background:#dbeafe}
+.option.correct{background:#86efac;border-color:#14532d;color:#14532d}
+.option.wrong{background:#fca5a5;border-color:#7f1d1d;color:#7f1d1d}
+.option:disabled{cursor:default}
+.feedback{display:none;padding:18px;margin-top:20px;border-radius:12px;line-height:1.6;font-weight:bold}
+.feedback.show{display:block}
+.feedback.correct-feedback{background:#14532d;color:#dcfce7;border:3px solid #22c55e}
+.feedback.wrong-feedback{background:#7f1d1d;color:#fee2e2;border:3px solid #ef4444}
+.next-area{text-align:right}
+.btn-next{background:#22c55e;color:#052e16;display:none;margin-top:18px}
+.result{text-align:center}
+.result-icon{font-size:75px;text-shadow:4px 4px 0 #111827}
+.result h2{color:#facc15;font-size:32px;text-shadow:2px 2px 0 #111827}
+.score-circle{
+  width:190px;height:190px;margin:25px auto;border-radius:50%;
+  border:7px solid #111827;background:linear-gradient(135deg,#0ea5e9,#047857);color:#fff;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  box-shadow:0 8px 0 #111827,0 15px 25px rgba(0,0,0,.3)
+}
+.score-circle .markah{font-size:42px;font-weight:900}.score-circle .peratus{font-size:20px;font-weight:bold}
+.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}
+.result-item{background:#1e293b;border:2px solid #475569;padding:18px 10px;border-radius:12px}
+.result-item strong{display:block;font-size:25px;margin-bottom:5px}.pencapaian{color:#4ade80}
+.tokoh-box{background:#422006;border:3px solid #f59e0b;padding:18px;border-radius:12px;line-height:1.6;margin-top:20px}
+.btn-restart{width:100%;background:#38bdf8;color:#082f49}
+.footer{text-align:center;padding:18px;color:#cbd5e1;font-size:13px}
+@media(max-width:600px){
+ .container{width:96%;margin:10px auto}.header{padding:20px 14px}
+ .header .icon{font-size:45px}.card{padding:18px}.result-grid{grid-template-columns:1fr}
+ .score-circle{width:160px;height:160px}.score-circle .markah{font-size:35px}
+ .option{padding:15px}
+}
+
+.game-badge{
+  display:inline-block;
+  margin:0 auto 12px;
+  padding:8px 14px;
+  border:3px solid #111827;
+  border-radius:10px;
+  background:#fbbf24;
+  color:#111827;
+  font-weight:900;
+  letter-spacing:.5px;
+  box-shadow:0 5px 0 #111827;
+  font-size:.82rem;
+}
+
+</style>
+</head>
+
+<body>
+<div class="container">
+  <header class="header">
+    <div class="icon">⚔️</div>
+    <div class="game-badge">🏆 QUEST • SEJARAH TAHUN 5</div>
+<h1>MISI PAHLAWAN TEMPATAN</h1>
+    <p>Sejarah Tahun 5</p>
+    <p>Unit 5: Bangkit Berjuang, Penjajah Ditentang</p>
+  </header>
+
+  <main class="card">
+    <section id="startScreen" class="screen active">
+      <div class="welcome">
+        <h2>🇲🇾 Selamat Datang, Pejuang!</h2>
+        <p class="welcome-text">
+          Mari uji pengetahuan kamu tentang <strong>pahlawan tempatan</strong>
+          yang bangkit menentang penjajahan dan campur tangan kuasa asing.
+        </p>
+
+        <label class="name-label" for="studentName">👤 Nama Murid</label>
+        <input type="text" id="studentName" class="name-input"
+               placeholder="Taip nama kamu di sini" maxlength="50">
+
+        <div class="info-box">
+          <strong>🎯 Cara Bermain</strong><br><br>
+          • Jawab <strong>25 soalan</strong>.<br>
+          • Setiap soalan mempunyai <strong>3 pilihan jawapan</strong>.<br>
+          • Jawapan betul mendapat <strong>1 markah</strong>.<br>
+          • Baca maklum balas selepas menjawab.<br>
+          • Cuba dapatkan markah tertinggi!
+        </div>
+
+        <button class="btn btn-start" onclick="startGame()">🚩 MULA PERMAINAN</button>
+      </div>
+    </section>
+
+    <section id="quizScreen" class="screen">
+      <div class="quiz-top">
+        <span id="questionNumber">Soalan 1 / 25</span>
+        <span class="score">⭐ Markah: <span id="score">0</span></span>
+      </div>
+
+      <div class="progress-container">
+        <div id="progressBar" class="progress-bar"></div>
+      </div>
+
+      <div class="question-box">
+        <h2 id="questionText">Soalan</h2>
+      </div>
+
+      <div id="options" class="options"></div>
+      <div id="feedback" class="feedback"></div>
+
+      <div class="next-area">
+        <button id="nextButton" class="btn btn-next" onclick="nextQuestion()">
+          SOALAN SETERUSNYA ➜
+        </button>
+      </div>
+    </section>
+
+    <section id="resultScreen" class="screen result">
+      <div class="result-icon">🏆</div>
+      <h2>PERMAINAN TAMAT!</h2>
+      <p id="resultName"></p>
+
+      <div class="score-circle">
+        <div id="finalScore" class="markah">0/25</div>
+        <div id="finalPercent" class="peratus">0%</div>
+      </div>
+
+      <div class="result-grid">
+        <div class="result-item">
+          <strong id="correctCount">0</strong>
+          Betul
+        </div>
+        <div class="result-item">
+          <strong id="wrongCount">0</strong>
+          Salah
+        </div>
+        <div class="result-item">
+          <strong id="grade" class="pencapaian">-</strong>
+          Pencapaian
+        </div>
+      </div>
+
+      <h3 id="resultMessage"></h3>
+
+      <div class="tokoh-box">
+        <strong>⚔️ 10 Pahlawan Tempatan</strong><br><br>
+        Dol Said • Rentap • Sharif Masahor • Dato' Maharaja Lela •
+        Yamtuan Antah • Dato' Bahaman • Haji Abdul Rahman Limbong •
+        Mat Salleh • Antanom • Tok Janggut
+      </div>
+
+      <br>
+      <button class="btn btn-restart" onclick="restartGame()">🔄 MAIN SEMULA</button>
+    </section>
+  </main>
+
+  <div class="footer">Permainan Pembelajaran Digital • Sejarah Tahun 5 • Gaya dunia blok</div>
+</div>
+
+<script>
+const questionBank = [
+  {
+    question:"Siapakah tokoh yang merupakan Penghulu Naning dan menentang British di Naning?",
+    options:["Dol Said","Tok Janggut","Dato' Bahaman"],
+    answer:0,
+    explanation:"Dol Said ialah Penghulu Naning yang menentang British di Naning, Melaka."
+  },
+  {
+    question:"Apakah sebab utama Dol Said menentang British?",
+    options:["Enggan membayar cukai hasil kepada British","British menguasai Sarikei","SBUB menjadikan orang Murut buruh paksa"],
+    answer:0,
+    explanation:"Dol Said menentang British kerana enggan membayar cukai hasil yang dikenakan oleh British."
+  },
+  {
+    question:"Siapakah pahlawan Iban yang menentang pemerintahan James Brooke di Sarawak?",
+    options:["Rentap","Antanom","Mat Salleh"],
+    answer:0,
+    explanation:"Rentap ialah pahlawan Iban yang menentang pemerintahan keluarga Brooke di Sarawak."
+  },
+  {
+    question:"Apakah antara sebab Rentap menentang James Brooke?",
+    options:["James Brooke cuba menghapuskan penempatan orang Iban","British memperkenalkan cukai di Naning","British mengambil alih pentadbiran Perak"],
+    answer:0,
+    explanation:"James Brooke cuba menghapuskan penempatan orang Iban di kawasan Nanga Skrang."
+  },
+  {
+    question:"Sharif Masahor merupakan pembesar di kawasan ________.",
+    options:["Sarikei","Naning","Pasir Puteh"],
+    answer:0,
+    explanation:"Sharif Masahor merupakan pembesar Sarikei di Sarawak."
+  },
+  {
+    question:"Mengapakah Sharif Masahor menentang James Brooke?",
+    options:["Beliau kehilangan hak dan kuasa sebagai pembesar","Beliau enggan membayar cukai di Naning","Beliau tidak bersetuju dengan buruh paksa"],
+    answer:0,
+    explanation:"Penguasaan James Brooke menyebabkan Sharif Masahor kehilangan hak dan kuasa sebagai pembesar di Sarikei."
+  },
+  {
+    question:"Siapakah tokoh yang mentadbir kawasan Pasir Salak di Perak?",
+    options:["Dato' Maharaja Lela","Yamtuan Antah","Haji Abdul Rahman Limbong"],
+    answer:0,
+    explanation:"Dato' Maharaja Lela ialah Orang Besar Berlapan Perak yang mentadbir kawasan Pasir Salak."
+  },
+  {
+    question:"Apakah antara sebab Dato' Maharaja Lela menentang British?",
+    options:["J.W.W. Birch campur tangan dalam pentadbiran dan adat resam","James Brooke menguasai Sarikei","SBUB menjadikan orang Murut buruh paksa"],
+    answer:0,
+    explanation:"J.W.W. Birch campur tangan dalam pentadbiran negeri serta adat resam masyarakat Melayu dan mengambil alih kuasa Sultan dan pembesar."
+  },
+  {
+    question:"Siapakah yang bersetuju mengambil tanggungjawab untuk membunuh J.W.W. Birch?",
+    options:["Dato' Maharaja Lela","Rentap","Mat Salleh"],
+    answer:0,
+    explanation:"Dato' Maharaja Lela bersetuju mengambil tanggungjawab untuk membunuh Residen British J.W.W. Birch."
+  },
+  {
+    question:"Siapakah tokoh yang menentang campur tangan British di Negeri Sembilan?",
+    options:["Yamtuan Antah","Dato' Bahaman","Dol Said"],
+    answer:0,
+    explanation:"Yamtuan Antah merupakan tokoh yang menentang campur tangan British di Negeri Sembilan."
+  },
+  {
+    question:"Antara kawasan berikut, yang manakah berkaitan dengan penentangan Yamtuan Antah?",
+    options:["Paroi dan Bukit Putus","Pasir Puteh dan Jeram","Nanga Skrang dan Kanowit"],
+    answer:0,
+    explanation:"Penentangan Yamtuan Antah berlaku di Negeri Sembilan, termasuk kawasan Paroi dan Bukit Putus."
+  },
+  {
+    question:"Siapakah tokoh yang mengetuai penentangan terhadap British di Pahang?",
+    options:["Dato' Bahaman","Sharif Masahor","Tok Janggut"],
+    answer:0,
+    explanation:"Dato' Bahaman ialah salah seorang tokoh utama yang menentang campur tangan British di Pahang."
+  },
+  {
+    question:"Apakah kawasan yang berjaya ditawan oleh Dato' Bahaman pada tahun 1891?",
+    options:["Lubuk Terua","Pasir Salak","Tambunan"],
+    answer:0,
+    explanation:"Pada tahun 1891, Dato' Bahaman berjaya menawan Lubuk Terua."
+  },
+  {
+    question:"Pada tahun 1894, Dato' Bahaman menguasai Kuala Tembeling dan ________.",
+    options:["Jeram Ampai","Pasir Puteh","Sarikei"],
+    answer:0,
+    explanation:"Pada tahun 1894, Dato' Bahaman menguasai Kuala Tembeling dan Jeram Ampai."
+  },
+  {
+    question:"Siapakah tokoh yang menentang British di Terengganu?",
+    options:["Haji Abdul Rahman Limbong","Yamtuan Antah","Dato' Maharaja Lela"],
+    answer:0,
+    explanation:"Haji Abdul Rahman Limbong ialah tokoh yang menentang campur tangan British di Terengganu."
+  },
+  {
+    question:"Apakah antara sebab Haji Abdul Rahman Limbong menentang British?",
+    options:["Peraturan tanah dan cukai baharu menyusahkan penduduk","James Brooke menguasai Sarikei","British cuba menghapuskan penempatan Iban"],
+    answer:0,
+    explanation:"Peraturan tanah dan cukai baharu British menimbulkan kesulitan kepada penduduk tempatan di Terengganu."
+  },
+  {
+    question:"Apakah yang berlaku kepada Haji Abdul Rahman Limbong selepas penentangannya?",
+    options:["Dibuang negeri ke Mekah","Dilantik menjadi Residen","Diberikan jawatan sebagai pembesar British"],
+    answer:0,
+    explanation:"Haji Abdul Rahman Limbong ditangkap dan kemudiannya dibuang negeri ke Mekah."
+  },
+  {
+    question:"Siapakah tokoh yang menentang Syarikat Borneo Utara British (SBUB) di Borneo Utara?",
+    options:["Mat Salleh","Rentap","Dol Said"],
+    answer:0,
+    explanation:"Mat Salleh merupakan tokoh yang menentang SBUB di Borneo Utara."
+  },
+  {
+    question:"Selepas kubunya di Ranau dimusnahkan oleh SBUB, Mat Salleh mendirikan kubu yang lebih kukuh di ________.",
+    options:["Tambunan","Lubuk Terua","Sarikei"],
+    answer:0,
+    explanation:"Mat Salleh mendirikan kubu yang lebih kukuh di Tambunan selepas kubunya di Ranau dimusnahkan oleh SBUB."
+  },
+  {
+    question:"Apakah antara sebab Antanom menentang SBUB?",
+    options:["SBUB menjadikan kaum Murut sebagai buruh paksa","British mengambil alih kuasa Sultan Perak","James Brooke menguasai Sarikei"],
+    answer:0,
+    explanation:"Antanom menentang SBUB kerana antaranya SBUB menjadikan kaum Murut sebagai buruh paksa."
+  },
+  {
+    question:"Antanom ialah tokoh yang memimpin kaum ________ menentang SBUB.",
+    options:["Murut","Iban","Melayu Naning"],
+    answer:0,
+    explanation:"Antanom ialah pemimpin kaum Murut di Borneo Utara yang menentang SBUB."
+  },
+  {
+    question:"Siapakah tokoh yang menentang British di Pasir Puteh, Kelantan?",
+    options:["Tok Janggut","Dato' Bahaman","Haji Abdul Rahman Limbong"],
+    answer:0,
+    explanation:"Tok Janggut memimpin penentangan terhadap British di Pasir Puteh, Kelantan."
+  },
+  {
+    question:"Apakah antara sebab Tok Janggut menentang British?",
+    options:["Tidak bersetuju dengan sistem cukai dan peraturan baharu","James Brooke menguasai Sarikei","SBUB menjadikan orang Murut buruh paksa"],
+    answer:0,
+    explanation:"Tok Janggut tidak bersetuju dengan pengenalan peraturan dan cukai baharu British yang membebankan penduduk."
+  },
+  {
+    question:"Di manakah Tok Janggut memimpin penentangan terhadap British?",
+    options:["Pasir Puteh","Pasir Salak","Lubuk Terua"],
+    answer:0,
+    explanation:"Tok Janggut memimpin penentangan terhadap British di Pasir Puteh, Kelantan."
+  },
+  {
+    question:"Tok Janggut menentang British kerana penduduk tempatan dibebankan dengan ________.",
+    options:["cukai dan peraturan baharu","buruh paksa di lombong","penghapusan penempatan Iban"],
+    answer:0,
+    explanation:"Pengenalan cukai dan peraturan baharu British menimbulkan bantahan penduduk tempatan."
+  }
+];
+
+let questions=[];
+let currentQuestion=0;
+let score=0;
+let studentName="";
+let answered=false;
+
+function shuffle(array){
+  const newArray=[...array];
+  for(let i=newArray.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [newArray[i],newArray[j]]=[newArray[j],newArray[i]];
+  }
+  return newArray;
+}
+
+function showScreen(screenId){
+  document.querySelectorAll(".screen").forEach(screen=>screen.classList.remove("active"));
+  document.getElementById(screenId).classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function startGame(){
+  const input=document.getElementById("studentName");
+  studentName=input.value.trim();
+
+  if(studentName===""){
+    alert("Sila masukkan nama murid terlebih dahulu.");
+    input.focus();
+    return;
+  }
+
+  questions=shuffle(questionBank);
+  currentQuestion=0;
+  score=0;
+  document.getElementById("score").textContent=score;
+  showScreen("quizScreen");
+  displayQuestion();
+}
+
+function displayQuestion(){
+  answered=false;
+  const question=questions[currentQuestion];
+
+  document.getElementById("questionNumber").textContent=
+    `Soalan ${currentQuestion+1} / ${questions.length}`;
+
+  document.getElementById("progressBar").style.width=
+    `${(currentQuestion/questions.length)*100}%`;
+
+  document.getElementById("questionText").textContent=question.question;
+
+  const optionsContainer=document.getElementById("options");
+  optionsContainer.innerHTML="";
+
+  question.options.forEach((option,index)=>{
+    const button=document.createElement("button");
+    button.className="option";
+    button.textContent=`${String.fromCharCode(65+index)}. ${option}`;
+    button.onclick=function(){checkAnswer(index,button)};
+    optionsContainer.appendChild(button);
+  });
+
+  const feedback=document.getElementById("feedback");
+  feedback.className="feedback";
+  feedback.innerHTML="";
+  document.getElementById("nextButton").style.display="none";
+}
+
+function checkAnswer(selectedAnswer,clickedButton){
+  if(answered)return;
+  answered=true;
+
+  const question=questions[currentQuestion];
+  const buttons=document.querySelectorAll(".option");
+
+  buttons.forEach(button=>button.disabled=true);
+  buttons[question.answer].classList.add("correct");
+
+  const feedback=document.getElementById("feedback");
+
+  if(selectedAnswer===question.answer){
+    score++;
+    document.getElementById("score").textContent=score;
+    clickedButton.classList.add("correct");
+    feedback.className="feedback show correct-feedback";
+    feedback.innerHTML=`✅ <strong>BETUL!</strong><br>${question.explanation}`;
+  }else{
+    clickedButton.classList.add("wrong");
+    feedback.className="feedback show wrong-feedback";
+    feedback.innerHTML=
+      `❌ <strong>SALAH.</strong><br>
+      Jawapan yang betul ialah <strong>${question.options[question.answer]}</strong>.<br>
+      ${question.explanation}`;
+  }
+
+  const nextButton=document.getElementById("nextButton");
+  nextButton.style.display="inline-block";
+
+  if(currentQuestion===questions.length-1){
+    nextButton.textContent="🏆 LIHAT KEPUTUSAN";
+  }else{
+    nextButton.textContent="SOALAN SETERUSNYA ➜";
+  }
+}
+
+function nextQuestion(){
+  if(!answered)return;
+  currentQuestion++;
+
+  if(currentQuestion>=questions.length){
+    showResult();
+  }else{
+    displayQuestion();
+  }
+}
+
+function showResult(){
+  const total=questions.length;
+  const percentage=Math.round((score/total)*100);
+  const wrong=total-score;
+
+  let grade;
+  let message;
+
+  if(percentage>=80){
+    grade="Cemerlang";
+    message="🌟 Tahniah! Kamu sangat menguasai pengetahuan tentang pahlawan tempatan.";
+  }else if(percentage>=60){
+    grade="Baik";
+    message="👏 Bagus! Kamu sudah menguasai banyak fakta. Cuba lagi untuk meningkatkan markah.";
+  }else if(percentage>=40){
+    grade="Memuaskan";
+    message="📚 Teruskan usaha! Ulang kaji Unit 5 dan cuba permainan sekali lagi.";
+  }else{
+    grade="Perlu Usaha";
+    message="💪 Jangan berputus asa! Ulang kaji Unit 5 dan cuba lagi.";
+  }
+
+  document.getElementById("resultName").textContent=`Tahniah, ${studentName}!`;
+  document.getElementById("finalScore").textContent=`${score}/${total}`;
+  document.getElementById("finalPercent").textContent=`${percentage}%`;
+  document.getElementById("correctCount").textContent=score;
+  document.getElementById("wrongCount").textContent=wrong;
+  document.getElementById("grade").textContent=grade;
+  document.getElementById("resultMessage").textContent=message;
+
+  showScreen("resultScreen");
+}
+
+function restartGame(){
+  document.getElementById("studentName").value=studentName;
+  showScreen("startScreen");
+}
+
+let musicOn = true;
+let audioCtx = null;
+let musicTimer = null;
+let musicStep = 0;
+const melody = [261.63,329.63,392.00,329.63,293.66,349.23,440.00,349.23];
+
+function startMusic(){
+  if(!musicOn || musicTimer) return;
+  audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+  if(audioCtx.state === "suspended") audioCtx.resume();
+  musicStep = 0;
+  musicTimer = setInterval(playNote, 430);
+}
+function playNote(){
+  if(!musicOn || !audioCtx) return;
+  const osc=audioCtx.createOscillator();
+  const gain=audioCtx.createGain();
+  osc.type="square";
+  osc.frequency.value=melody[musicStep % melody.length];
+  gain.gain.setValueAtTime(0.0001,audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.055,audioCtx.currentTime+0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+0.32);
+  osc.connect(gain);gain.connect(audioCtx.destination);
+  osc.start();osc.stop(audioCtx.currentTime+0.34);
+  musicStep++;
+}
+function stopMusic(){
+  if(musicTimer){clearInterval(musicTimer);musicTimer=null;}
+}
+const originalStartGame=startGame;
+startGame=function(){
+  originalStartGame();
+  if(musicOn) startMusic();
+};
+
+</script>
+</body>
+</html>
